@@ -1,0 +1,25 @@
+version: "3.5"
+
+services:
+  
+  fake-stream:
+    build:
+      context: . 
+      dockerfile: Dockerfile 
+    image: review-streaming-app 
+    restart: always
+    command: "python fake_stream.py"
+  
+  spark-app:
+    image: review-streaming-app
+    depends_on:
+      - fake-stream 
+    command: "python spark_app.py"
+    
+  dashboard:
+    image: review-streaming-app
+    ports:
+      - "5001:5001"
+    depends_on:
+      - spark-app
+    command: "python app.py"

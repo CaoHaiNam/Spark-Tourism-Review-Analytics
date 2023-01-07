@@ -1,0 +1,7 @@
+model
+chromedriver_linux64
+checkpoint_ReviewApp
+database.ini
+data/train_model
+data/review_1.csv
+data/comment_traveloka
