@@ -6,3 +6,4 @@ data/train_model
 data/review_1.csv
 data/comment_traveloka
 code.ipynb
+__pycache__
