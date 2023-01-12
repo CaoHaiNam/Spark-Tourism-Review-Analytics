@@ -37,8 +37,11 @@ connection = mysql.connector.connect(**params)
 mycursor = connection.cursor()
 if not utils.checkTableExists(connection, 'review'):
     mycursor.execute("CREATE TABLE review (review TEXT, giai_tri INT, luu_tru INT, nha_hang INT, an_uong INT, di_chuyen INT, mua_sam INT, time VARCHAR(20))")
-
 sql = "INSERT INTO review (review, giai_tri, luu_tru, nha_hang, an_uong, di_chuyen, mua_sam, time) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)"
+
+if not utils.checkTableExists(connection, 'raw_review'):
+    mycursor.execute("CREATE TABLE raw_review (raw_review TEXT, time VARCHAR(20))")
+sql_raw = "INSERT INTO raw_review (raw_review, time) VALUES (%s, %s)"
 
 model = AutoModelForSequenceClassification.from_pretrained('model', num_labels=num_labels).to(device)
 tokenizer = AutoTokenizer.from_pretrained(tokenizer_name)
@@ -56,6 +59,17 @@ while True:
         for index, row in data.iterrows():
             review = row['review']
             print(review)
+            time = datetime.now()
+            # time = time.strftime('%Y-%m-%d %H:%M:%S')
+            time = time.strftime('%Y-%m-%d')
+            val = (
+                    review,
+                    time    
+                )
+            mycursor.execute(sql_raw, val)
+            connection.commit()
+            # mycursor.execute(sql_raw, (review))
+            # connection.commit()
             input = tokenizer(review, return_tensors="pt", padding='max_length', truncation=True, max_length=64).to(device)
             logit = model(**input)[0][0]
             predict_results = utils.convert_logit(logit).tolist()
