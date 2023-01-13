@@ -43,17 +43,16 @@ def send_df_to_dashboard(df):
     url = 'http://localhost:5001/updateData'
     response = requests.post(url, data=request_data)
 
-def print_data(df):
-    # extract the hashtags from dataframe and convert them into array
-    aspects = [str(t.aspect) for t in df.select("aspect").collect()]
-    # extract the counts from dataframe and convert them into array
-    pos = [str(p.pos) for p in df.select("pos").collect()]
-    neu = [str(p.neu) for p in df.select("neu").collect()]
-    neg = [str(p.neg) for p in df.select("neg").collect()]
-    print(type(pos[0]))
-    request_data = {'label': aspects, 'data_pos': pos, 'data_neu': neu, 'data_neg': neg}
-    print(request_data)
-
+# def print_data(df):
+#     # extract the hashtags from dataframe and convert them into array
+#     aspects = [str(t.aspect) for t in df.select("aspect").collect()]
+#     # extract the counts from dataframe and convert them into array
+#     pos = [str(p.pos) for p in df.select("pos").collect()]
+#     neu = [str(p.neu) for p in df.select("neu").collect()]
+#     neg = [str(p.neg) for p in df.select("neg").collect()]
+#     print(type(pos[0]))
+#     request_data = {'label': aspects, 'data_pos': pos, 'data_neu': neu, 'data_neg': neg}
+#     print(request_data)
 
 def get_sql_context_instance(spark_context):
     if ('sqlContextSingletonInstance' not in globals()):
